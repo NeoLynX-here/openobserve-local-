@@ -216,7 +216,7 @@ Filters on Windows Security Event ID **4625** ("An account failed to log on") ra
 | Alert if No. of events | `>= 3` |
 | Period (look-back window) | 5 minutes |
 | Frequency | 1 minute |
-| Destination | `telegram_alert` (see §5) |
+| Destination | `telegram_alert` |
 
 **Alternative considered:** switching **Alert Type** to **Real-time** fires instantly on every single matching event (no threshold, no period/frequency) instead of waiting for 3 in a 5-minute window — better for "notify me immediately," at the cost of more noise from occasional mistyped passwords.
 
