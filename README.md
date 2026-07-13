@@ -2,7 +2,7 @@
 
 **Host:** Windows machine — both the OpenObserve server and the OTel collector agent run on the same host, reachable at `http://localhost:5080`
 
-**Goal:** Run a self-hosted OpenObserve instance on Windows, ship Windows host metrics and Security Event Log data into it, build a dashboard, and alert on failed logins via Telegram.
+**Goal:** Run a self-hosted [OpenObserve](https://openobserve.ai/) instance on Windows, ship Windows host metrics and Security Event Log data into it, build a dashboard, and alert on failed logins via Telegram.
 
 ---
 
@@ -20,7 +20,7 @@ OpenObserve OSS runs locally as a standalone Windows binary. An OpenTelemetry Co
 
 ## 2. OpenObserve Server Installation (Windows)
 
-OpenObserve OSS ships as a single self-contained binary — no separate database or dependencies to install.
+OpenObserve OSS ships as a single self-contained binary — no separate database or dependencies to install. You can find their official documentation at [openobserve.ai/docs](https://openobserve.ai/docs/).
 
 ```powershell
 # Download the OSS Windows binary (check https://openobserve.ai/downloads for the current version — v0.91.1 at time of writing)
