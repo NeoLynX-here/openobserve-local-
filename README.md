@@ -63,7 +63,7 @@ Get-Service otel-collector   # confirm Status: Running
 
 ---
 
-## 8. Viewing Logs in the UI
+## 4. Viewing Logs in the UI
 
 To explore your ingested Windows event data and host metrics natively:
 
@@ -75,7 +75,7 @@ To explore your ingested Windows event data and host metrics natively:
 
 ---
 
-## 9. Sample Log Queries (SQL Mode)
+## 5. Sample Log Queries (SQL Mode)
 
 Because your OpenTelemetry collector routes all four Windows event channels into a single `windows` stream, you will rely heavily on the `body_channel` and `body_event_id_id` fields to isolate signals, particularly for security monitoring. 
 
@@ -159,7 +159,7 @@ LIMIT 100
 ```
 > **Note:** `match_all('keyword')` is OpenObserve's highly optimized full-text search function and is completely case-insensitive.
 
-## 4. Dashboard: Import and Field-Mapping Fix
+## 6. Dashboard: Import and Field-Mapping Fix
 
 ### Import
 
@@ -194,7 +194,7 @@ Applied the same pattern to the "Log" table panel's `x_axis_5` column. Both pane
 
 ---
 
-## 5. Alert: Failed Windows Logins
+## 7. Alert: Failed Windows Logins
 
 Filters on Windows Security Event ID **4625** ("An account failed to log on") rather than text-matching "fail", since all four event log channels share the one `windows` stream.
 
@@ -213,7 +213,7 @@ Filters on Windows Security Event ID **4625** ("An account failed to log on") ra
 
 ---
 
-## 6. Telegram Notification Destination
+## 8. Telegram Notification Destination
 
 ### Bot setup
 1. Created a bot via **@BotFather** in Telegram → obtained a bot token.
@@ -246,7 +246,7 @@ Attached to the `Failed_Windows_Logins` alert's **Destination** field.
 
 ---
 
-## 7. Known Issues / Notes
+## 9. Known Issues / Notes
 
 | Item | Status |
 |---|---|
