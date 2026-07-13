@@ -37,6 +37,8 @@ Once running, the UI is at `http://localhost:5080` — log in with the root emai
 
 > This section documents OpenObserve's standard published install method for Windows. If the actual commands used differed (e.g. Docker Desktop instead of the raw binary), swap this block for the real ones.
 
+---
+
 ## 3. Windows Agent Installation
 
 To get the tailored installation command for your specific OpenObserve instance:
