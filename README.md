@@ -1,7 +1,7 @@
 # OpenObserve Windows Monitoring — Setup Report
 
 **Host:** Windows machine — both the OpenObserve server and the OTel collector agent run on the same host, reachable at `http://localhost:5080`
-**Date:** July 2026
+
 **Goal:** Run a self-hosted OpenObserve instance on Windows, ship Windows host metrics and Security Event Log data into it, build a dashboard, and alert on failed logins via Telegram.
 
 ---
