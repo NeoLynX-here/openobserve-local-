@@ -63,6 +63,102 @@ Get-Service otel-collector   # confirm Status: Running
 
 ---
 
+## 8. Viewing Logs in the UI
+
+To explore your ingested Windows event data and host metrics natively:
+
+1. Open the OpenObserve UI at `http://localhost:5080`.
+2. On the left-hand navigation menu, click **Logs**.
+3. In the stream selector dropdown (usually near the top left, labeled "Stream"), select your **`windows`** stream.
+4. Directly below the stream selector, you can toggle the query bar between a **Visual Query Builder** (point-and-click filters) and **SQL Mode**. 
+   * *Note: To extract nested JSON values using the `spath()` function you implemented on your dashboard, you must use SQL Mode.*
+
+---
+
+## 9. Sample Log Queries (SQL Mode)
+
+Because your OpenTelemetry collector routes all four Windows event channels into a single `windows` stream, you will rely heavily on the `body_channel` and `body_event_id_id` fields to isolate signals, particularly for security monitoring. 
+
+Paste any of the following queries directly into the SQL editor on the Logs page.
+
+### Find Specific Failed Logins by Account Name
+Use `spath()` to extract the raw JSON subject and look for failed logins (Event ID 4625) targeting a specific user.
+
+```sql
+SELECT
+  _timestamp,
+  body_channel,
+  body_event_id_id,
+  spath(body_details_subject, 'Account Name') as target_account,
+  spath(body_details_subject, 'Logon Type') as logon_type
+FROM "windows"
+WHERE body_channel = 'Security'
+  AND body_event_id_id = 4625
+  AND spath(body_details_subject, 'Account Name') = 'adith'
+ORDER BY _timestamp DESC
+LIMIT 50
+```
+
+### Identify Potential Brute-Force Activity
+To aggregate the noise and see which accounts are failing to log in most frequently over your selected time window (a standard metric for brute-force detection):
+
+```sql
+SELECT
+  spath(body_details_subject, 'Account Name') as targeted_account,
+  count(*) as failed_attempts
+FROM "windows"
+WHERE body_channel = 'Security'
+  AND body_event_id_id = 4625
+GROUP BY targeted_account
+ORDER BY failed_attempts DESC
+LIMIT 10
+```
+
+### Track Successful Logins
+Useful for establishing a baseline of normal authentication activity.
+
+```sql
+SELECT
+  _timestamp,
+  spath(body_details_subject, 'Account Name') as logged_in_user,
+  spath(body_details_subject, 'Account Domain') as domain,
+  spath(body_details_subject, 'Logon ID') as logon_id
+FROM "windows"
+WHERE body_channel = 'Security'
+  AND body_event_id_id = 4624
+ORDER BY _timestamp DESC
+LIMIT 50
+```
+
+### Search for Application Errors
+If a Windows service crashes or an application throws a fault, it generally lands in the Application channel.
+
+```sql
+SELECT
+  _timestamp,
+  body_event_id_id,
+  body_provider_name,
+  body_level,
+  body_message
+FROM "windows"
+WHERE body_channel = 'Application'
+  AND body_level IN ('Error', 'Critical')
+ORDER BY _timestamp DESC
+LIMIT 50
+```
+
+### Full-Text Search Across All Logs
+If you aren't sure which channel an event is in, or you just want to find a specific keyword (like a machine name or an IP address) across the entire stream:
+
+```sql
+SELECT *
+FROM "windows"
+WHERE match_all('LOQ-ENCELADUS')
+ORDER BY _timestamp DESC
+LIMIT 100
+```
+> **Note:** `match_all('keyword')` is OpenObserve's highly optimized full-text search function and is completely case-insensitive.
+
 ## 4. Dashboard: Import and Field-Mapping Fix
 
 ### Import
