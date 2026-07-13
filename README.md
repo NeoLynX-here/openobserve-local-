@@ -39,8 +39,15 @@ Once running, the UI is at `http://localhost:5080` — log in with the root emai
 
 ## 3. Windows Agent Installation
 
+To get the tailored installation command for your specific OpenObserve instance:
+1. In the OpenObserve UI, navigate to **Ingestion** (or **Data Sources** depending on your version) on the left-hand menu.
+2. Select **Windows** from the list of available integrations.
+3. The UI will display a pre-generated PowerShell script. This command is highly convenient because your `-URL` and `-AUTH_KEY` (Basic Auth) are already pre-populated for you.
+
+Copy that command, open **PowerShell as Administrator**, and paste it to run:
+
 ```powershell
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/openobserve/agents/main/windows/install.ps1 -OutFile install.ps1
+Invoke-WebRequest -Uri [https://raw.githubusercontent.com/openobserve/agents/main/windows/install.ps1](https://raw.githubusercontent.com/openobserve/agents/main/windows/install.ps1) -OutFile install.ps1
 .\install.ps1 -URL http://localhost:5080/api/default/ -AUTH_KEY <REDACTED_BASIC_AUTH_KEY>
 ```
 
