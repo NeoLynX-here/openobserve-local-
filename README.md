@@ -168,39 +168,523 @@ LIMIT 100
 ```
 > **Note:** `match_all('keyword')` is OpenObserve's highly optimized full-text search function and is completely case-insensitive.
 
-## 6. Dashboard: Import and Field-Mapping Fix
+## 6. Dashboard: Import Custom JSON
 
-### Import
+The default community dashboard for Windows assumes that nested JSON fields (like `Account Name`) are auto-flattened into fields like `body_details_subject_account_name`. Depending on your OTel collector version, this might not happen, resulting in a `Search field not found` schema error.
 
-Used OpenObserve's community dashboard repository, which has a dashboard built specifically for this Windows OTel agent:
+To fix this, the dashboard JSON below has been customized to use `customQuery: true` and the `spath()` function to correctly extract the Account Name at query time.
 
-1. Dashboard JSON: `https://raw.githubusercontent.com/openobserve/dashboards/main/Windows/Windows.dashboard.json`
-2. OpenObserve → **Dashboards → Import** → pasted the URL (or uploaded the downloaded file) → imported into the `default` org.
+### Import Instructions
 
-### Issue: broken field reference
+1. Copy the JSON payload below and save it to a file named `Windows-Custom.dashboard.json` (or simply copy it to your clipboard).
+2. In OpenObserve, navigate to **Dashboards** → **Import**.
+3. Upload the file or paste the JSON directly.
+4. Import it into your `default` organization.
 
-Two panels ("Account name" and the "Log" table) errored with:
+### Custom Dashboard JSON
+
+```json
+{
+  "version": 8,
+  "dashboardId": "7482229072261545984",
+  "title": "Windows",
+  "description": "",
+  "role": "",
+  "owner": "",
+  "created": "2026-07-13T00:27:03.912Z",
+  "tabs": [
+    {
+      "tabId": "default",
+      "name": "Default",
+      "panels": [
+        {
+          "id": "Panel_ID7706110",
+          "type": "area-stacked",
+          "title": "Severity",
+          "description": "",
+          "config": {
+            "show_legends": true,
+            "legends_position": null,
+            "base_map": {
+              "type": "osm"
+            },
+            "map_view": {
+              "zoom": 1,
+              "lat": 0,
+              "lng": 0
+            }
+          },
+          "queryType": "sql",
+          "queries": [
+            {
+              "query": "SELECT histogram(_timestamp) as \"x_axis_1\", severity as \"x_axis_2\", count(_timestamp) as \"y_axis_1\"  FROM \"windows\"  GROUP BY x_axis_1, x_axis_2 ORDER BY x_axis_1, x_axis_2",
+              "vrlFunctionQuery": null,
+              "customQuery": false,
+              "fields": {
+                "stream": "windows",
+                "stream_type": "logs",
+                "x": [
+                  {
+                    "label": " ",
+                    "alias": "x_axis_1",
+                    "type": "build",
+                    "color": null,
+                    "functionName": "histogram",
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "_timestamp",
+                          "streamAlias": null
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "y": [
+                  {
+                    "label": " ",
+                    "alias": "y_axis_1",
+                    "type": "build",
+                    "color": "#5960b2",
+                    "functionName": "count",
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "_timestamp",
+                          "streamAlias": null
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "z": [],
+                "breakdown": [
+                  {
+                    "label": "Severity",
+                    "alias": "x_axis_2",
+                    "type": "build",
+                    "color": null,
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "severity",
+                          "streamAlias": null
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "filter": {
+                  "filterType": "group",
+                  "logicalOperator": "AND",
+                  "conditions": []
+                }
+              },
+              "config": {
+                "promql_legend": "",
+                "layer_type": "scatter",
+                "weight_fixed": 1
+              }
+            }
+          ],
+          "layout": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 16,
+            "i": 1
+          }
+        },
+        {
+          "id": "Panel_ID6604910",
+          "type": "area-stacked",
+          "title": "Channel",
+          "description": "",
+          "config": {
+            "show_legends": true,
+            "legends_position": null,
+            "base_map": {
+              "type": "osm"
+            },
+            "map_view": {
+              "zoom": 1,
+              "lat": 0,
+              "lng": 0
+            }
+          },
+          "queryType": "sql",
+          "queries": [
+            {
+              "query": "SELECT histogram(_timestamp) as \"x_axis_1\", body_channel as \"x_axis_2\", count(_timestamp) as \"y_axis_1\"  FROM \"windows\"  GROUP BY x_axis_1, x_axis_2 ORDER BY x_axis_1, x_axis_2",
+              "vrlFunctionQuery": null,
+              "customQuery": false,
+              "fields": {
+                "stream": "windows",
+                "stream_type": "logs",
+                "x": [
+                  {
+                    "label": " ",
+                    "alias": "x_axis_1",
+                    "type": "build",
+                    "color": null,
+                    "functionName": "histogram",
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "_timestamp",
+                          "streamAlias": null
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "y": [
+                  {
+                    "label": " ",
+                    "alias": "y_axis_1",
+                    "type": "build",
+                    "color": "#5960b2",
+                    "functionName": "count",
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "_timestamp",
+                          "streamAlias": null
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "z": [],
+                "breakdown": [
+                  {
+                    "label": "Body Channel",
+                    "alias": "x_axis_2",
+                    "type": "build",
+                    "color": null,
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "body_channel",
+                          "streamAlias": null
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "filter": {
+                  "filterType": "group",
+                  "logicalOperator": "AND",
+                  "conditions": []
+                }
+              },
+              "config": {
+                "promql_legend": "",
+                "layer_type": "scatter",
+                "weight_fixed": 1
+              }
+            }
+          ],
+          "layout": {
+            "x": 64,
+            "y": 0,
+            "w": 64,
+            "h": 16,
+            "i": 2
+          }
+        },
+        {
+          "id": "Panel_ID5077210",
+          "type": "area-stacked",
+          "title": "Account name",
+          "description": "",
+          "config": {
+            "show_legends": true,
+            "legends_position": null,
+            "base_map": {
+              "type": "osm"
+            },
+            "map_view": {
+              "zoom": 1,
+              "lat": 0,
+              "lng": 0
+            }
+          },
+          "queryType": "sql",
+          "queries": [
+            {
+              "query": "SELECT histogram(_timestamp) as \"x_axis_1\", count(_timestamp) as \"y_axis_1\", spath(body_details_subject, 'Account Name') as \"x_axis_2\" FROM \"windows\"  GROUP BY x_axis_1, x_axis_2",
+              "vrlFunctionQuery": "",
+              "customQuery": true,
+              "fields": {
+                "stream": "windows",
+                "stream_type": "logs",
+                "x": [
+                  {
+                    "label": " ",
+                    "alias": "x_axis_1",
+                    "column": "x_axis_1",
+                    "type": "build",
+                    "color": null,
+                    "functionName": "histogram",
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "_timestamp",
+                          "streamAlias": null
+                        }
+                      }
+                    ],
+                    "treatAsNonTimestamp": false,
+                    "showFieldAsJson": false
+                  }
+                ],
+                "y": [
+                  {
+                    "label": " ",
+                    "alias": "y_axis_1",
+                    "column": "y_axis_1",
+                    "type": "build",
+                    "color": null,
+                    "functionName": "count",
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "_timestamp",
+                          "streamAlias": null
+                        }
+                      }
+                    ],
+                    "treatAsNonTimestamp": false,
+                    "showFieldAsJson": false
+                  }
+                ],
+                "z": [],
+                "breakdown": [
+                  {
+                    "label": "Body Details Subject Account Name",
+                    "alias": "x_axis_2",
+                    "column": "x_axis_2",
+                    "type": "build",
+                    "color": null,
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "body_details_subject_account_name",
+                          "streamAlias": null
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "filter": {
+                  "filterType": "group",
+                  "logicalOperator": "AND",
+                  "conditions": []
+                }
+              },
+              "config": {
+                "promql_legend": "",
+                "layer_type": "scatter",
+                "weight_fixed": 1
+              },
+              "joins": []
+            }
+          ],
+          "layout": {
+            "x": 128,
+            "y": 0,
+            "w": 64,
+            "h": 16,
+            "i": 3
+          },
+          "htmlContent": "",
+          "markdownContent": "",
+          "customChartContent": " // To know more about ECharts , \n// visit: [https://echarts.apache.org/examples/en/index.html](https://echarts.apache.org/examples/en/index.html) \n// Example: [https://echarts.apache.org/examples/en/editor.html?c=line-simple](https://echarts.apache.org/examples/en/editor.html?c=line-simple) \n// Define your ECharts 'option' here. \n// 'data' variable is available for use and contains the response data from the search result and it is an array.\noption = {  \n \n};\n  "
+        },
+        {
+          "id": "Panel_ID4571710",
+          "type": "table",
+          "title": "Log",
+          "description": "",
+          "config": {
+            "show_legends": true,
+            "legends_position": null,
+            "base_map": {
+              "type": "osm"
+            },
+            "map_view": {
+              "zoom": 1,
+              "lat": 0,
+              "lng": 0
+            }
+          },
+          "queryType": "sql",
+          "queries": [
+            {
+              "query": "SELECT histogram(_timestamp) as \"x_axis_1\", body_computer as \"x_axis_2\", body_channel as \"x_axis_3\", severity as \"x_axis_4\", spath(body_details_subject, 'Account Name') as \"x_axis_5\", body_message as \"x_axis_6\" FROM \"windows\"",
+              "vrlFunctionQuery": "",
+              "customQuery": true,
+              "fields": {
+                "stream": "windows",
+                "stream_type": "logs",
+                "x": [
+                  {
+                    "label": "Timestamp",
+                    "alias": "x_axis_1",
+                    "column": "x_axis_1",
+                    "type": "build",
+                    "color": null,
+                    "functionName": "histogram",
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "_timestamp",
+                          "streamAlias": null
+                        }
+                      }
+                    ],
+                    "treatAsNonTimestamp": false,
+                    "showFieldAsJson": false
+                  },
+                  {
+                    "label": "Body Computer",
+                    "alias": "x_axis_2",
+                    "column": "x_axis_2",
+                    "type": "build",
+                    "color": null,
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "body_computer",
+                          "streamAlias": null
+                        }
+                      }
+                    ],
+                    "treatAsNonTimestamp": false,
+                    "showFieldAsJson": false
+                  },
+                  {
+                    "label": "Body Channel",
+                    "alias": "x_axis_3",
+                    "column": "x_axis_3",
+                    "type": "build",
+                    "color": null,
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "body_channel",
+                          "streamAlias": null
+                        }
+                      }
+                    ],
+                    "treatAsNonTimestamp": false,
+                    "showFieldAsJson": false
+                  },
+                  {
+                    "label": "Severity",
+                    "alias": "x_axis_4",
+                    "column": "x_axis_4",
+                    "type": "build",
+                    "color": null,
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "severity",
+                          "streamAlias": null
+                        }
+                      }
+                    ],
+                    "treatAsNonTimestamp": false,
+                    "showFieldAsJson": false
+                  },
+                  {
+                    "label": "Body Details Subject Account Name",
+                    "alias": "x_axis_5",
+                    "column": "x_axis_5",
+                    "type": "build",
+                    "color": null,
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "body_details_subject_account_name",
+                          "streamAlias": null
+                        }
+                      }
+                    ],
+                    "treatAsNonTimestamp": false,
+                    "showFieldAsJson": false
+                  },
+                  {
+                    "label": "Body Message",
+                    "alias": "x_axis_6",
+                    "column": "x_axis_6",
+                    "type": "build",
+                    "color": null,
+                    "args": [
+                      {
+                        "type": "field",
+                        "value": {
+                          "field": "body_message",
+                          "streamAlias": null
+                        }
+                      }
+                    ],
+                    "treatAsNonTimestamp": false,
+                    "showFieldAsJson": false
+                  }
+                ],
+                "y": [],
+                "z": [],
+                "breakdown": [],
+                "filter": {
+                  "filterType": "group",
+                  "logicalOperator": "AND",
+                  "conditions": []
+                }
+              },
+              "config": {
+                "promql_legend": "",
+                "layer_type": "scatter",
+                "weight_fixed": 1
+              },
+              "joins": []
+            }
+          ],
+          "layout": {
+            "x": 0,
+            "y": 16,
+            "w": 192,
+            "h": 18,
+            "i": 4
+          },
+          "htmlContent": "",
+          "markdownContent": "",
+          "customChartContent": " // To know more about ECharts , \n// visit: [https://echarts.apache.org/examples/en/index.html](https://echarts.apache.org/examples/en/index.html) \n// Example: [https://echarts.apache.org/examples/en/editor.html?c=line-simple](https://echarts.apache.org/examples/en/editor.html?c=line-simple) \n// Define your ECharts 'option' here. \n// 'data' variable is available for use and contains the response data from the search result and it is an array.\noption = {  \n \n};\n  "
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "list": [],
+    "showDynamicFilters": false
+  }
+}
 ```
-Search field not found: Schema error: No field named body_details_subject_account_name.
-```
-
-**Root cause:** `body_details_subject` is ingested as a single field whose *value* is a raw JSON string (e.g. `{"Account Domain":"LOQ-ENCELADUS","Account Name":"adith","Logon ID":"0x721E2",...}`). Because the inner JSON keys contain spaces and capitals ("Account Name"), OpenObserve does not auto-flatten them into separate indexed fields the way it does for clean snake_case JSON — so `body_details_subject_account_name` never existed as a real field. The imported dashboard was built assuming a different ingestion-time flattening than what this collector version actually produces.
-
-**Fix:** extract the value at query time with OpenObserve's `spath()` function, applied directly in each panel's SQL query (with `customQuery: true`):
-
-```sql
-SELECT
-  histogram(_timestamp) as "x_axis_1",
-  count(_timestamp) as "y_axis_1",
-  spath(body_details_subject, 'Account Name') as "x_axis_2"
-FROM "windows"
-GROUP BY x_axis_1, x_axis_2
-```
-
-Applied the same pattern to the "Log" table panel's `x_axis_5` column. Both panels render correctly now.
-
-> **Note:** the dashboard JSON's `fields.breakdown`/`fields.x` metadata (which drives the visual **Build** mode UI) still references the old dead field name for these two panels. This is harmless while `customQuery: true` is set — but toggling either field from **Raw/SQL** back to **Build** mode in the UI would regenerate a query from that stale metadata and reintroduce the error. Leave those two fields alone.
-
 ---
 
 ## 7. Alert: Failed Windows Logins
