@@ -745,6 +745,5 @@ Attached to the `Failed_Windows_Logins` alert's **Destination** field.
 |---|---|
 | `AUTH_KEY` (OpenObserve root Basic Auth) was shared in plaintext during setup | Rotate root password if not already done |
 | Telegram bot token is a live secret | Keep out of shared chats/docs; regenerate via BotFather if exposed |
-| Two dashboard panels have stale `fields` metadata under the hood | Don't toggle those specific fields to Build mode in the UI |
 | Real-time vs. Scheduled alert trade-off for failed logins | Currently Scheduled (≥3 in 5 min); revisit if faster notification is wanted |
 | `otel-collector` service does not auto-start after install/reinstall | Always run `Start-Service -Name otel-collector` manually afterward |
